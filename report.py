@@ -30,7 +30,7 @@ response = requests.get('{}/rates/details_by_queue_by_interval.json'.format(chav
 res = response.json()
 
 #creates the message string
-mensagem = open('model.txt', 'r').read()
+mensagem = open('model.txt', 'r', encoding='utf8').read()
 mensagem = mensagem.replace('{dep_name}', dep.capitalize())
 mensagem = mensagem.replace('{time}', str(hora))
 mensagem = mensagem.replace('{avg_duration}', res['totals'][0]['duration_avg'])
@@ -44,5 +44,5 @@ mensagem = mensagem.replace('{perc_ans}', res['totals'][0]['perc_answered'])
 
 #dumps the message into the variables json
 variaveis['report'] = mensagem
-with open('variables.json', 'w') as write_file:
+with open('variables.json', 'w', encoding='utf8') as write_file:
     json.dump(variaveis, write_file)
