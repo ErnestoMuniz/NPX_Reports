@@ -19,12 +19,11 @@ cookies = {
 #prepare params
 params = (
     ('queue', dep),
-    ('sla', '30'),
     ('queue_type', ''),
 )
 
 #makes request
-response = requests.get('{}/rates/details_by_queue_by_interval.json'.format(chaves['npx_url']), params=params, cookies=cookies, verify=False)
+response = requests.get('{}/rates/totals_filter_by_queues.json'.format(chaves['npx_url']), params=params, cookies=cookies, verify=False)
 
 #json from API response
 res = response.json()
@@ -33,14 +32,13 @@ res = response.json()
 mensagem = open('model.txt', 'r', encoding='utf8').read()
 mensagem = mensagem.replace('{dep_name}', dep.capitalize())
 mensagem = mensagem.replace('{time}', str(hora))
-mensagem = mensagem.replace('{avg_duration}', res['totals'][0]['duration_avg'])
-mensagem = mensagem.replace('{avg_waiting}', res['totals'][0]['wait_avg'])
-mensagem = mensagem.replace('{total_time}', res['totals'][0]['total_time'])
-mensagem = mensagem.replace('{ans_calls}', str(res['totals'][0]['total_answered']))
-mensagem = mensagem.replace('{total_calls}', str(res['totals'][0]['total_calls']))
+mensagem = mensagem.replace('{avg_duration}', res['duration_answered'])
+mensagem = mensagem.replace('{avg_waiting}', res['wait'])
+mensagem = mensagem.replace('{ans_calls}', str(res['answered']))
+mensagem = mensagem.replace('{total_calls}', str(res['answered'] + res['not_answered']))
 mensagem = mensagem.replace('{day}', str(hoje.day).zfill(2))
 mensagem = mensagem.replace('{month}', str(hoje.month).zfill(2))
-mensagem = mensagem.replace('{perc_ans}', res['totals'][0]['perc_answered'])
+mensagem = mensagem.replace('{perc_ans}', str(round( (res['answered'] / (res['answered'] + res['not_answered']) ) * 100, 2)) )
 
 #dumps the message into the variables json
 variaveis['report'] = mensagem
